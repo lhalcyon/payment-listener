@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+        <PreferenceCategory
+                android:key="settings"
+                android:summary="设置"
+                android:title="设置">
+                <EditTextPreference
+                        android:defaultValue=""
+                        android:key="deviceid"
+                        android:title="deviceid"
+                        android:summary="设置deviceid来标识设备,如果不设置使用系统的Serial号码的UUID"/>
+                <CheckBoxPreference
+                        android:title="加密"
+                        android:defaultValue="false"
+                        android:key="isencrypt" />
+                <ListPreference
+                        android:summary="加密方法"
+                        android:key="encryptmethod"
+                        android:title="加密方法"
+                        android:entries="@array/pref_entries_encryptmethod"
+                        android:entryValues="@array/pref_entryvalues_encryptmethod"
+                        >
+                </ListPreference>
+                <EditTextPreference
+                        android:defaultValue=""
+                        android:key="passwd"
+                        android:summary="密钥"
+                        android:title="密钥" />
+                 <Preference
+                        android:title="解密说明">
+                        <intent
+                                android:action="com.weihuagu.receiptnotice.illustratedecryptmethod"
+                                android:category="android.intent.category.DEFAULT"/>
+                </Preference>
+        </PreferenceCategory>
+        <PreferenceCategory
+                android:key="keep_alive"
+                android:summary="报告连接"
+                android:title="报告连接">
+          <CheckBoxPreference
+                        android:title="是否使用socket.io echo server"
+                        android:defaultValue="false"
+                        android:key="isecho" />
+        <EditTextPreference
+                        android:defaultValue=""
+                        android:key="echoserver"
+                        android:summary="echo socket.io 服务器"
+                        android:title="echo 服务器" />
+        <EditTextPreference
+                        android:defaultValue=""
+                        android:key="echointerval"
+                        android:summary="echo 间隔(秒),建议设置为15秒以上，如设置过大（如10分钟以上时），导致server频繁接到disconnect事件可以调小到不会频繁断开为止。"
+                        android:title="echo 间隔" />
+        </PreferenceCategory>
+        <PreferenceCategory
+                android:key="action"
+                android:summary="行为"
+                android:title="行为">
+                <CheckBoxPreference
+                        android:title="是否在推送后移除通知"
+                        android:defaultValue="false"
+                        android:summary="如果勾选，会在推送完后，清除掉这条通知栏的通知"
+                        android:key="isremovenotification" />
+                <CheckBoxPreference
+                        android:title="是否推送失败重复推送"
+                        android:defaultValue="false"
+                        android:key="ispostrepeat" />
+                <EditTextPreference
+                        android:defaultValue=""
+                        android:key="postrepeatnum"
+                        android:title="推送失败重复次数" />
+        </PreferenceCategory>
+        <PreferenceCategory
+                android:key="record"
+                android:summary="记录"
+                android:title="记录">
+                <Preference
+                        android:title="推送记录">
+                        <intent
+                                android:action="com.weihuagu.receiptnotice.showfilelog"
+                                android:targetClass="com.weihuagu.receiptnotice.FileLogActivity"
+                                android:targetPackage="com.weihuagu.receiptnotice"/>
+                </Preference>
+        </PreferenceCategory>
+        <PreferenceCategory
+                android:key="about"
+                android:summary="关于"
+                android:title="关于">
+                <Preference
+                        android:title="github地址">
+                        <intent
+                                android:action="android.intent.action.VIEW"
+                                android:category="android.intent.category.DEFAULT"
+                                android:data="https://github.com/WeihuaGu/receiptnotice"/>
+                </Preference>
+                <Preference
+                        android:title="捐助">
+                        <intent
+                                android:action="android.intent.action.VIEW"
+                                android:category="android.intent.category.DEFAULT"
+                                android:data="https://weihuagu.github.io/donate/"/>
+                </Preference>
+        </PreferenceCategory>
+
+
+</PreferenceScreen>

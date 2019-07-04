@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <android.support.v7.widget.SwitchCompat
+            android:layout_centerInParent="true"
+            android:id="@+id/notifySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:text="是否已开启通知栏权限"
+            />
+
+        <Button
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+    </RelativeLayout>
+
+
+    <Button
+        android:onClick="onJumpNotifySetting"
+        android:text="跳转系统通知栏页"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/content"
+        android:background="#E0F7FA"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:minHeight="200dp"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:visibility="gone"
+        android:text="测试notify"
+        android:onClick="onTestNotify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+</android.support.v7.widget.LinearLayoutCompat>

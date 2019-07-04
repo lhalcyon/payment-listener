@@ -1,0 +1,160 @@
+package com.lhalcyon.pl.service;
+
+import android.app.Notification;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
+import android.service.notification.NotificationListenerService;
+import android.service.notification.StatusBarNotification;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.lhalcyon.pl.ActionStatusBarNotification;
+import com.lhalcyon.pl.AsyncResponse;
+import com.lhalcyon.pl.handler.NotificationHandle;
+import com.lhalcyon.pl.handler.NotificationHandleFactory;
+import com.lhalcyon.pl.util.LogUtil;
+import com.lhalcyon.pl.util.PreferenceUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
+public class NLService extends NotificationListenerService implements AsyncResponse, ActionStatusBarNotification {
+    private String TAG = "NLService";
+    private String posturl = null;
+    private Context context = null;
+
+    private String getPostUrl() {
+        SharedPreferences sp = getSharedPreferences("url", 0);
+        this.posturl = sp.getString("posturl", "");
+        return posturl;
+    }
+
+
+    @Override
+    public void onNotificationPosted(StatusBarNotification sbn) {
+        //        super.onNotificationPosted(sbn);
+        //这里只是获取了包名和通知提示信息，其他数据可根据需求取，注意空指针就行
+
+        if (getPostUrl() == null)
+            return;
+
+        Notification notification = sbn.getNotification();
+        String pkg = sbn.getPackageName();
+        if (notification == null) {
+            return;
+        }
+
+        Bundle extras = notification.extras;
+        if (extras == null)
+            return;
+
+        //接受推送处理
+        NotificationHandle notihandle = new NotificationHandleFactory().getNotificationHandle(pkg, notification);
+        if (notihandle != null) {
+            notihandle.setStatusBarNotification(sbn);
+            notihandle.setActionStatusbar(this);
+            notihandle.handleNotification();
+            notihandle.removeNotification();
+            return;
+        }
+        LogUtil.debugLog("-----------------");
+        LogUtil.debugLog("接受到通知消息");
+        LogUtil.debugLog("这是检测之外的其它通知");
+        LogUtil.debugLog("包名是" + pkg);
+        printNotify(getNotitime(notification), getNotiTitle(extras), getNotiContent(extras));
+        LogUtil.debugLog("**********************");
+
+
+    }
+
+    @Override
+    public void onNotificationRemoved(StatusBarNotification sbn) {
+
+        super.onNotificationRemoved(sbn);
+    }
+
+    public void removeNotification(StatusBarNotification sbn) {
+        PreferenceUtil preference = new PreferenceUtil(getBaseContext());
+        if (preference.isRemoveNotification()) {
+            if (Build.VERSION.SDK_INT >= 21)
+                cancelNotification(sbn.getKey());
+            else
+                cancelNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId());
+            sendToast("receiptnotice移除了包名为" + sbn.getPackageName() + "的通知");
+        }
+    }
+
+    private void sendBroadcast(String msg) {
+        Intent intent = new Intent(getPackageName());
+        intent.putExtra("text", msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendToast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    }
+
+    private String getNotitime(Notification notification) {
+
+        long when = notification.when;
+        Date date = new Date(when);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String notitime = format.format(date);
+        return notitime;
+
+    }
+
+    private String getNotiTitle(Bundle extras) {
+        String title = null;
+        // 获取通知标题
+        title = extras.getString(Notification.EXTRA_TITLE, "");
+        return title;
+    }
+
+    private String getNotiContent(Bundle extras) {
+        String content = null;
+        // 获取通知内容
+        content = extras.getString(Notification.EXTRA_TEXT, "");
+        return content;
+    }
+
+    private void printNotify(String notitime, String title, String content) {
+        Log.d(TAG, notitime);
+        Log.d(TAG, title);
+        Log.d(TAG, content);
+    }
+
+
+    @Override
+    public void onDataReceivedSuccess(String[] returnstr) {
+        Log.d(TAG, "Post Receive-returned post string");
+        Log.d(TAG, returnstr[2]);
+        LogUtil.postResultLog(returnstr[0], returnstr[1], returnstr[2]);
+
+
+    }
+
+    @Override
+    public void onDataReceivedFailed(String[] returnstr, Map<String, String> postedmap) {
+        // TODO Auto-generated method stub
+        Log.d(TAG, "Post Receive-post error");
+        LogUtil.postResultLog(returnstr[0], returnstr[1], returnstr[2]);
+        PreferenceUtil preference = new PreferenceUtil(getBaseContext());
+        if (preference.isPostRepeat()) {
+            String repeatlimit = preference.getPostRepeatNum();
+            int limitnum = Integer.parseInt(repeatlimit);
+            String repeatnumstr = postedmap.get("repeatnum");
+            int repeatnum = Integer.parseInt(repeatnumstr);
+            if (repeatnum <= limitnum) {
+
+            }
+
+        }
+
+    }
+}

@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'//添加
+
+android {
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+
+
+    }
+
+
+}
+
+
+publish {
+    userOrg = 'lhalcyon'//bintray.com用户名
+    groupId = 'com.lhalcyon'//jcenter上的路径
+    artifactId = 'payment-listener'//项目名称
+    publishVersion = '0.0.1'//版本号
+    desc = 'Android notification listener for payment'//描述，不重要
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.google.code.gson:gson:2.8.5'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:support-v4:26.1.0'
+}
