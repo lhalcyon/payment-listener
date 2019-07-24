@@ -89,6 +89,11 @@ public class PLInitializer {
         return this;
     }
 
+    public PLInitializer stopListening(Context context){
+        context.stopService(new Intent(context,NotificationForegroundMonitorService.class));
+        context.stopService(new Intent(context,NotificationCollectorMonitorService.class));
+        return this;
+    }
 
 
     public boolean handle(Map<String,String> params){
