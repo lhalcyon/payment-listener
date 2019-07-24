@@ -15,5 +15,6 @@
             </intent-filter>
         </service>
         <service android:name="com.lhalcyon.pl.service.NotificationCollectorMonitorService"/>
+        <service android:name="com.lhalcyon.pl.service.NotificationForegroundMonitorService"/>
     </application>
 </manifest>

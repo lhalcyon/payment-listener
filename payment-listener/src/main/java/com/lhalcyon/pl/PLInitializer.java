@@ -2,8 +2,10 @@ package com.lhalcyon.pl;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.lhalcyon.pl.service.NotificationCollectorMonitorService;
+import com.lhalcyon.pl.service.NotificationForegroundMonitorService;
 import com.lhalcyon.pl.support.ILog;
 import com.lhalcyon.pl.support.OnNotificationReceivedListener;
 
@@ -31,9 +33,36 @@ public class PLInitializer {
 
     private OnNotificationReceivedListener mNotificationReceivedListener;
 
+    private String mNotificationTitle;
+
+    private String mNotificationDesc;
+
+    public String getNotificationTitle() {
+        if (TextUtils.isEmpty(mNotificationTitle)) {
+            return "支付自动确认";
+        }
+        return mNotificationTitle;
+    }
+
+    public String getNotificationDesc() {
+        if (TextUtils.isEmpty(mNotificationDesc)){
+            return "正在为您服务";
+        }
+        return mNotificationDesc;
+    }
 
     public ILog getLog() {
         return mLog;
+    }
+
+    public PLInitializer setNotificationTitle(String notificationTitle) {
+        mNotificationTitle = notificationTitle;
+        return this;
+    }
+
+    public PLInitializer setNotificationDesc(String notificationDesc) {
+        mNotificationDesc = notificationDesc;
+        return this;
     }
 
     public PLInitializer setLog(ILog log) {
@@ -52,6 +81,11 @@ public class PLInitializer {
 
     public PLInitializer startListening(Context context){
         context.startService(new Intent(context, NotificationCollectorMonitorService.class));
+        return this;
+    }
+
+    public PLInitializer startForegroundListening(Context context){
+        context.startService(new Intent(context, NotificationForegroundMonitorService.class));
         return this;
     }
 

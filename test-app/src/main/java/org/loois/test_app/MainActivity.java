@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.lhalcyon.pl.PLInitializer;
 import com.lhalcyon.pl.service.NotificationCollectorMonitorService;
+import com.lhalcyon.pl.service.NotificationForegroundMonitorService;
 import com.lhalcyon.pl.support.ILog;
 import com.lhalcyon.pl.support.OnNotificationReceivedListener;
 import com.lhalcyon.pl.util.NotificationUtil;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("监听", message);
                     }
                 })
+                .setNotificationTitle("Piccaso")
+                .setNotificationDesc("正在自动确认收款")
                 .setNotificationReceivedListener(new OnNotificationReceivedListener() {
                     @Override
                     public void onPaymentTypeReceived(Map<String, String> params) {
@@ -55,10 +58,6 @@ public class MainActivity extends AppCompatActivity {
                         showNotification(params.get("title"), params.get("money") + " | " + params.get("content"));
                     }
                 });
-
-        startService(new Intent(this, NotificationCollectorMonitorService.class));
-
-
     }
 
     private void showNotification(String title, String content) {
@@ -86,6 +85,24 @@ public class MainActivity extends AppCompatActivity {
         setStatus();
 
     }
+
+    public void onStartService(View v){
+        startService(new Intent(this, NotificationCollectorMonitorService.class));
+    }
+
+    public void onStopService(View v){
+        stopService(new Intent(this, NotificationCollectorMonitorService.class));
+    }
+
+    public void onStartForeService(View v){
+        startService(new Intent(this, NotificationForegroundMonitorService.class));
+    }
+
+    public void onStopForeService(View v){
+        stopService(new Intent(this, NotificationForegroundMonitorService.class));
+    }
+
+
 
     public void onJumpNotifySetting(View v) {
         NotificationUtil.startNotificationActivity(mContext);
