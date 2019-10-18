@@ -10,3 +10,6 @@
 .externalNativeBuild
 /app/key.properties
 
+
+.idea
+.idea/
