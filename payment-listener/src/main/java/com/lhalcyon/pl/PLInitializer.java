@@ -21,7 +21,7 @@ import java.util.Map;
 public class PLInitializer {
 
 
-    public static PLInitializer shared(){
+    public static PLInitializer shared() {
         return Singleton.instance;
     }
 
@@ -45,7 +45,7 @@ public class PLInitializer {
     }
 
     public String getNotificationDesc() {
-        if (TextUtils.isEmpty(mNotificationDesc)){
+        if (TextUtils.isEmpty(mNotificationDesc)) {
             return "正在为您服务";
         }
         return mNotificationDesc;
@@ -79,28 +79,36 @@ public class PLInitializer {
         return this;
     }
 
-    public PLInitializer startListening(Context context){
+    public PLInitializer startListening(Context context) {
         context.startService(new Intent(context, NotificationCollectorMonitorService.class));
         return this;
     }
 
-    public PLInitializer startForegroundListening(Context context){
+    public PLInitializer startForegroundListening(Context context) {
         context.startService(new Intent(context, NotificationForegroundMonitorService.class));
         return this;
     }
 
-    public PLInitializer stopListening(Context context){
-        context.stopService(new Intent(context,NotificationForegroundMonitorService.class));
-        context.stopService(new Intent(context,NotificationCollectorMonitorService.class));
+    public PLInitializer stopListening(Context context) {
+        context.stopService(new Intent(context, NotificationForegroundMonitorService.class));
+        context.stopService(new Intent(context, NotificationCollectorMonitorService.class));
         return this;
     }
 
 
-    public boolean handle(Map<String,String> params){
-        if (getNotificationReceivedListener() == null){
+    public boolean handle(Map<String, String> params) {
+        if (getNotificationReceivedListener() == null) {
             return false;
         }
         getNotificationReceivedListener().onPaymentTypeReceived(params);
+        return true;
+    }
+
+    public boolean handleUndefine(String pkg, String content) {
+        if (getNotificationReceivedListener() == null){
+            return false;
+        }
+        getNotificationReceivedListener().onUndefineNotificationReceived(pkg,content);
         return true;
     }
 

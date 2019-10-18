@@ -34,7 +34,7 @@ public class NotificationHandleFactory {
             return new IcbcelifeNotificationHandle("com.icbc.biz.elife", notification);
         }
 
-        return null;
+        return new OtherNotificationHandle(pkg,notification);
 
     }
 

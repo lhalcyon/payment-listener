@@ -12,4 +12,6 @@ import java.util.Map;
 public interface OnNotificationReceivedListener {
 
     void onPaymentTypeReceived(Map<String,String> params);
+
+    void onUndefineNotificationReceived(String pkg,String content);
 }
