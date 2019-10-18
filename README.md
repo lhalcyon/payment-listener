@@ -1,48 +1,85 @@
-# 没有办法的获取到收款推送的办法
+## payment-monitor
 
-#### 目前个人收款现状
+__payment-monitor__ 是一款Android原生插件,对手机通知栏监听,针对支付类型通知进行回调.
 
-##### 个人申请支付接口现状
+目前支持
 
-- 原生支付宝，微信支付
+- 支付宝
+- 收钱吧
+- 工商银行
+- 云闪付
+- 微信 / 微信店员
 
-- `支付宝只服务于有营业执照、个体工商户的商户。就算你有钱但没实体店铺在某宝上也是买不到的。截止目前无法以个人身份（或以个人为主体）直接申请API。网上那些 “个人申请支付宝xx接口” 的文章就不要看了，节约时间。微信同支付宝，不支付个人申请。`
-    
-##### 原先的方法不管用了
+### 0.0.3
 
-- 最好的方法是抓取与支付宝绑定的邮件，但是只要你绑定了电话，支付包就不发邮件和短信提醒你有收款到帐了。
+这里更新了文档为uni的引入方式,历史版本写的是weex引入方法可能有所误导.
 
-- 抓自己支付宝网页版的账单，这个关键在于复制出cookie,原先一个cookie可以使用一个月，现在是动态的5分钟就变了。使用模拟登录，支付宝的风控很厉害，导致模拟登录容易被封。
+```javascript
+
+<script>
+	// 云端插件依赖后,代码引入
+	const notifyListenerPlugin = uni.requireNativePlugin('lhalcyon-payment-monitor');
+
+	export default {
+		data() {
+			return {
+				title: 'Hello'
+			}
+		},
+		methods: {
+		  // 测试调用Android原生toast
+			onToast(){
+				notifyListenerPlugin.show('heheda');
+			},
+			// 获取是否有通知栏权限
+			getNotification(){
+				const isEnable = notifyListenerPlugin.isNotificationListening();
+				notifyListenerPlugin.show('通知栏权限是否开启:'+isEnable);
+			},
+			// 跳转原生通知栏设置页, 需要Android >=5.1
+			onJumpToSettings(){
+				notifyListenerPlugin.jumpToNotificationSettingPage();
+			},
+			// 初始化通知监听服务,并设置监听回调
+      // params 是string的map  ,主要key有 type,time,title,money,content,transferor 等
+      // 具体可以参考 https://github.com/lhalcyon/payment-listener/tree/master/payment-listener/src/main/java/com/lhalcyon/pl/handler 查看各通知类型具体字段
+			initNotificationCallback(){
+				notifyListenerPlugin.show('init invoked');
+				notifyListenerPlugin.initNotificationCallback(function (params) {
+				    notifyListenerPlugin.show('notification callback:'+params);
+				});
+			},
+      // 这里是将服务前台化,方便用户感知监听,以及提升服务存活性,但是需要 Android O及以上版本才能使用,否则和 startService() 方法一样处理
+			startForegroundService(){
+				notifyListenerPlugin.show('startForegroundService');
+        // 这里的两个参数分别为通知栏的标题和描述
+				notifyListenerPlugin.startForegroundService('plugin test title','working in the foreground');
+			},
+      // 停止这里调用 stopService() 是一样的效果
+			stopForegroundService(){
+				notifyListenerPlugin.show('stopForegroundService');
+				notifyListenerPlugin.stopForegroundService();
+			},
+		}
+	}
+</script>
+
+```
+
+前台服务演示:
+
+![](https://i.loli.net/2019/07/31/5d4131497aa0c72064.png)
+
+回调中的params字段实例:
+
+![](https://i.loli.net/2019/07/24/5d38155eaccad17075.png)
 
 
 
-#### 实在是没有法子的办法
+---
 
-- 手机安装一个app,然后这个服务监听手机收到的通知，如果是收到收款的通知，就把信息推送到指定的url去。
 
-#### 本软件使用方法
 
-- 安装后先将软件加入系统白名单，各个安卓系统的方法各有不同
 
-- 打开软件自动跳转到获取通知权限页面，允许本应用监控通知
 
-- 返回到软件主页，填写你要接受收款信息通知的url,软件在接到收款通知后，会用post的方法，发送json信息.
 
-- 详细使用方法，参考[wiki](https://github.com/WeihuaGu/receiptnotice/wiki)
-
-#### 这个可搭配服务端项目
-
-|getreceipt-server |
-|:-|
-|[getreceipt-server](https://github.com/WeihuaGu/getreceipt-server)|
-
-##### 捐助
-|支付宝 |云闪付红包码 |支付宝红包码|
-|-|-|-|
-|<img src="https://raw.githubusercontent.com/WeihuaGu/weihuagu.github.io/master/donate/shoukuanma.jpg" width="100"/> | <img src="https://weihuagu.github.io/donate/unionpayredcode.jpg" width="100" /> | <img src="https://raw.githubusercontent.com/WeihuaGu/weihuagu.github.io/master/donate/redcode.jpg" width="100"/>|
-
-##### 引用项目
-| ||
-|-|-|
-|本软件从NLservice修改而来| [NLservice](https://github.com/WHD597312/NLservice)|
-|实时logcat | [Lynx](https://github.com/pedrovgs/Lynx) |

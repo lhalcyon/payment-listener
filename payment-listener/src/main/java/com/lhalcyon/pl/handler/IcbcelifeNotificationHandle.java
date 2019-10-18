@@ -28,10 +28,8 @@ public class IcbcelifeNotificationHandle extends NotificationHandle{
                                 return ;
                         }
                 }
-
-
-
         }
+
 
         
 		@Override

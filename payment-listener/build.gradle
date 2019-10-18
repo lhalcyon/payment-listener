@@ -43,7 +43,7 @@ publish {
     userOrg = 'lhalcyon'//bintray.com用户名
     groupId = 'com.lhalcyon'//jcenter上的路径
     artifactId = 'payment-listener'//项目名称
-    publishVersion = '0.0.3'//版本号
+    publishVersion = '0.0.4'//版本号
     desc = 'Android notification listener for payment'//描述，不重要
 }
 
