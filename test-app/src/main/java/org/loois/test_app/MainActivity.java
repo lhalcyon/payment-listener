@@ -57,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
                         mTextView.setText(params.toString());
                         showNotification(params.get("title"), params.get("money") + " | " + params.get("content"));
                     }
+
+                    @Override
+                    public void onUndefineNotificationReceived(String pkg, String content) {
+                        System.out.println(pkg);
+                        System.out.println(content);
+                    }
                 });
     }
 
